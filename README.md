@@ -1,2 +1,9 @@
-# il-admin_microservices
-il-admin microservices repository
+# Выполнено ДЗ №12
+
+- Установил docker, проверил на тестовом контейнере
+- Описал разницу между контейнером и образом в docker-1.log
+- Развёрнул машину в yandex cloud
+- На машине поднял докер
+- Написал Dockerfile и собрал образ
+- Собрал Image reddit и загрузил на dockerhub
+- Image скачал запустил и проверил локально на хосте
