@@ -4,8 +4,8 @@ WORKDIR /app
 COPY . /app
 
 RUN apk --no-cache --update add build-base && \
-    pip3 install --no-cache-dir -U pip && \
-    pip3 install --no-cache-dir -r /app/requirements.txt && \
+    pip3 install --upgrade pip && \
+    pip3 install -r /app/requirements.txt && \
     apk del build-base
 
 ENV POST_DATABASE_HOST post_db
