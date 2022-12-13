@@ -1,0 +1,17 @@
+version: '3.3'
+services:
+  ui:
+    volumes:
+      - type: bind
+        source: "/home/yc-user/ui"
+        target: "/app"
+    command: "puma --debug -w2"
+    
+  comment:
+    volumes:
+      - /home/yc-user/comment:/app
+    command: "puma --debug -w2"
+    
+  post:
+    volumes:
+      - /home/yc-user/post:/app
