@@ -1,16 +1,29 @@
-# Выполнено ДЗ №14
+# Выполнено ДЗ №15
 
-- Проверил работу контейнеров с разными сетками
-- Написал docker-compose.yml для запуска сервисов
-- Перенёс все переменные в .env
-- Настроил docker-compose.override.yml для запуска дебага puma
+- Добавил образ и контейнер с прометеем
+- Собрал последние образы контейнеров с помощью docker_build.sh
+- Добавил в прометей node-exporter для мониторинга хоста
+- Отправил все образы в докерхаб
 
-Базовое имя проекта можно задать через переменную COMPOSE_PROJECT_NAME
+Задания со *
+- Добавил bitnami/mongodb-exporter для мониторинга монго
+- Добавил blackbox-exporter для вебчеков и tcp-проверки портов
+- Написан Makefile для быстрого запуска, билда и деплоя образов
 
+Запустить все контейнеры с помощью docker-compose
 ```sh
-docker-compose up -d
-docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d
+make dcr
 ```
-http://51.250.2.254:9292/
+Остановить все контейнеры с помощью docker-compose
+```sh
+make dcr
+```
+Поссмотреть запущенные контейнеры
+```sh
+make dcr
+```
+Сервис:
+http://51.250.64.131:9090/
 
-
+Dockerhub:
+https://hub.docker.com/u/iladmin
