@@ -1,0 +1,106 @@
+version: '3.3'
+services:
+  
+  post_db:
+    env_file:
+      - .env    
+    image: mongo:3.2
+    container_name: mongo_db_mon
+    volumes:
+      - post_db:/data/db
+    networks:
+      back_net:
+        aliases:
+          - post_db
+          - comment_db
+    
+  ui:
+    env_file:
+      - .env
+    image: ${MY_USER}/ui:${UI_VERSION}
+    container_name: ui_mon
+    ports:
+      - ${LOCAL_PORT}:${REMOTE_PORT}/tcp
+    networks:
+      - front_net
+      
+  post:
+    env_file:
+      - .env
+    image: ${MY_USER}/post:${POST_VERSION}
+    container_name: post_mon
+    networks:
+      - front_net
+      - back_net
+    
+  comment:
+    env_file:
+      - .env  
+    image: ${MY_USER}/comment:${COMMENT_VERSION}
+    container_name: comment_mon
+    networks:
+      - front_net
+      - back_net
+      
+  prometheus:
+    image: ${MY_USER}/prometheus
+    ports:
+      - '9090:9090'
+    volumes:
+      - prometheus_data:/prometheus
+    networks:
+      - front_net
+      - back_net  
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention=1d'
+
+  node-exporter:
+    image: prom/node-exporter:v0.15.2
+    user: root
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
+    networks:
+      - front_net
+      - back_net    
+    
+  mongo-exporter:
+    image: bitnami/mongodb-exporter:latest
+    command:
+      - '--mongodb.uri=mongodb://post_db:27017'
+      - '--collect-all'  
+    networks:
+      - back_net
+    
+  blackbox-exporter:
+    image: prom/blackbox-exporter:latest
+    volumes:
+      - ./blackbox.yml:/opt/blackbox-exporter/conf/config.yml
+    networks:
+      - front_net
+  
+volumes:
+  post_db:
+  prometheus_data:
+      
+networks:
+  back_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.2.0/24
+  front_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.1.0/24
+
